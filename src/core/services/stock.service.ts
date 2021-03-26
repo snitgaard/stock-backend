@@ -24,18 +24,18 @@ export class StockService implements IStockService {
     return stockEntities;
   }
 
-  async newStock(id: string, stockName: string, initValue: number, currentValue: number, description: string): Promise<StockValue> {
+  async newStock(stockValue: StockValue): Promise<StockValue> {
     const stockDb = await this.stockRepository.findOne({
-      stockName: stockName,
+      stockName: stockValue.stockName,
     });
     if (!stockDb)
     {
       let stock = this.stockRepository.create();
-      stock.id = id;
-      stock.stockName = stockName;
-      stock.initValue = initValue;
-      stock.currentValue = currentValue;
-      stock.description = description;
+      stock.id = stockValue.id;
+      stock.stockName = stockValue.stockName;
+      stock.initValue = stockValue.initValue;
+      stock.currentValue = stockValue.currentValue;
+      stock.description = stockValue.description;
       stock = await this.stockRepository.save(stock);
       return {
         id: '' + stock.id,
