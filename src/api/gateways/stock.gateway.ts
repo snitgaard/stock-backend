@@ -24,14 +24,7 @@ export class StockGateway {
     @ConnectedSocket() stock: Socket,
   ): Promise<void> {
     try {
-      const stockModel: StockValue = {
-        id: stockValue.id,
-        stockName: stockValue.stockName,
-        description: stockValue.description,
-        initValue: stockValue.initValue,
-        currentValue: stockValue.currentValue
-      }
-      const stockClient = await this.stockService.newStock(stockModel);
+      const stockClient = await this.stockService.newStock(stock.id, stockValue);
       const stockClients = await this.stockService.getStocks();
       const stockDTO: StockDTO = {
         stocks: stockClients,
@@ -43,8 +36,11 @@ export class StockGateway {
       console.log("Gay")
     }
   }
-
-
-
-
+  @SubscribeMessage('welcomeStock')
+  async handleWelcomeStockEvent(
+      @ConnectedSocket() stock: Socket,
+  ): Promise<void> {
+    const stockClients = await this.stockService.getStocks();
+    stock.emit('stocks', stockClients)
+  }
 }

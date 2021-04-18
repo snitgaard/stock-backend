@@ -24,14 +24,27 @@ export class StockService implements IStockService {
     return stockEntities;
   }
 
-  async newStock(stockValue: StockValue): Promise<StockValue> {
+  async getStock(id: string): Promise<StockValue> {
+    const stockDb = await this.stockRepository.findOne({id: id})
+    const stockValue: StockValue = {
+      id: stockDb.id,
+      currentValue: stockDb.currentValue,
+      initValue: stockDb.initValue,
+      description: stockDb.description,
+      stockName: stockDb.stockName
+    };
+    return stockValue;
+  }
+
+  async newStock(id: string, stockValue: StockValue): Promise<StockValue>
+  {
     const stockDb = await this.stockRepository.findOne({
       stockName: stockValue.stockName,
     });
     if (!stockDb)
     {
       let stock = this.stockRepository.create();
-      stock.id = stockValue.id;
+      stock.id = id;
       stock.stockName = stockValue.stockName;
       stock.initValue = stockValue.initValue;
       stock.currentValue = stockValue.currentValue;
@@ -45,7 +58,7 @@ export class StockService implements IStockService {
         description: stock.description,
       };
     }
-    if(stockDb.id)
+    if(stockDb.id === id)
     {
       return {
         id: stockDb.id,

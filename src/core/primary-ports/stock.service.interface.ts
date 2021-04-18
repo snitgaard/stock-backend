@@ -1,7 +1,7 @@
 import { StockValue } from '../models/stock.model';
 export const IStockServiceProvider = 'IStockServiceProvider';
 export interface IStockService {
-  newStock(stockValue: StockValue): Promise<StockValue>;
+  newStock(id: string, stockValue: StockValue): Promise<StockValue>;
 
   getStocks(): Promise<StockValue[]>;
 
