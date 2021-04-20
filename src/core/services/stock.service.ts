@@ -72,4 +72,15 @@ export class StockService implements IStockService {
       throw new Error('Stock already exists');
     }
   }
+
+  async update(id: string, stock: StockValue): Promise<StockValue> {
+    await this.stockRepository.update(id, stock);
+    const updatedStock = await this.stockRepository.findOne(id);
+    if(updatedStock) {
+      return updatedStock;
+    }
+    else {
+      throw new Error('Stock not found');
+    }
+  }
 }

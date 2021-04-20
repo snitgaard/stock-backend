@@ -33,9 +33,29 @@ export class StockGateway {
       stock.emit('stockDTO', stockDTO);
       this.server.emit('stocks', stockClients);
     } catch(e) {
-      console.log("Gay")
+      console.log("Didnt create")
     }
   }
+  @SubscribeMessage('updateStock')
+  async handleUpdateStockEvent(
+      @MessageBody() stockValue: StockValue,
+      @ConnectedSocket() stock: Socket,
+  ): Promise<void> {
+    try {
+      console.log('', stockValue);
+      const stockUpdate = await this.stockService.update(stockValue.id, stockValue);
+      const stocks = await this.stockService.getStocks();
+      const stockDTO: StockDTO = {
+        stocks: stocks,
+        stock: stockUpdate
+      };
+      stock.emit('stockDTO', stockDTO);
+      this.server.emit('stocks', stocks);
+    } catch(e) {
+      console.log('Error', e);
+    }
+  }
+
   @SubscribeMessage('welcomeStock')
   async handleWelcomeStockEvent(
       @ConnectedSocket() stock: Socket,
